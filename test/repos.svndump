@@ -1,0 +1,364 @@
+SVN-fs-dump-format-version: 2
+
+UUID: 7786f881-140f-4ba9-bfd2-dc67574577b9
+
+Revision-number: 0
+Prop-content-length: 56
+Content-length: 56
+
+K 8
+svn:date
+V 27
+2018-06-12T20:27:10.208785Z
+PROPS-END
+
+Revision-number: 1
+Prop-content-length: 118
+Content-length: 118
+
+K 10
+svn:author
+V 3
+srl
+K 8
+svn:date
+V 27
+2018-06-12T20:30:20.860327Z
+K 7
+svn:log
+V 20
+initial version of a
+PROPS-END
+
+Node-path: a
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: a/trunk
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: a/trunk/readme.txt
+Node-kind: file
+Node-action: add
+Text-content-md5: 733f328d8cff7dd89970ec34a70aa14f
+Text-content-sha1: 318c739ad52530f8913cc71c2ade57f75b5c4079
+Prop-content-length: 10
+Text-content-length: 10
+Content-length: 20
+
+PROPS-END
+this is a
+
+
+Revision-number: 2
+Prop-content-length: 118
+Content-length: 118
+
+K 10
+svn:author
+V 3
+srl
+K 8
+svn:date
+V 27
+2018-06-12T20:30:26.807557Z
+K 7
+svn:log
+V 20
+initial version of b
+PROPS-END
+
+Node-path: b
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: b/trunk
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: b/trunk/readme.txt
+Node-kind: file
+Node-action: add
+Text-content-md5: 101a2e90e9ebd05e976db0aed1d1dbf7
+Text-content-sha1: 49a9cd3ef8381da2b841001fc4f9bba9b9e1fbed
+Prop-content-length: 10
+Text-content-length: 10
+Content-length: 20
+
+PROPS-END
+this is b
+
+
+Revision-number: 3
+Prop-content-length: 106
+Content-length: 106
+
+K 10
+svn:author
+V 3
+srl
+K 8
+svn:date
+V 27
+2018-06-12T20:32:22.083927Z
+K 7
+svn:log
+V 9
+make tags
+PROPS-END
+
+Node-path: a/branches
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: a/tags
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: b/branches
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: b/tags
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 4
+Prop-content-length: 103
+Content-length: 103
+
+K 10
+svn:author
+V 3
+srl
+K 8
+svn:date
+V 27
+2018-06-12T20:32:28.893783Z
+K 7
+svn:log
+V 6
+a v1.0
+PROPS-END
+
+Node-path: a/tags/release-1-0
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 3
+Node-copyfrom-path: a/trunk
+
+
+Revision-number: 5
+Prop-content-length: 103
+Content-length: 103
+
+K 10
+svn:author
+V 3
+srl
+K 8
+svn:date
+V 27
+2018-06-12T20:32:41.873637Z
+K 7
+svn:log
+V 6
+b v1.0
+PROPS-END
+
+Node-path: b/tags/release-1-0
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 4
+Node-copyfrom-path: b/trunk
+
+
+Revision-number: 6
+Prop-content-length: 102
+Content-length: 102
+
+K 10
+svn:author
+V 3
+srl
+K 8
+svn:date
+V 27
+2018-06-12T20:40:29.820982Z
+K 7
+svn:log
+V 5
+merge
+PROPS-END
+
+Node-path: a/trunk
+Node-action: delete
+
+
+Node-path: b/trunk
+Node-action: delete
+
+
+Node-path: tags
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: tags/release-1-0
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: tags/release-1-0/a
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 5
+Node-copyfrom-path: a/tags/release-1-0
+
+
+Node-path: tags/release-1-0/b
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 5
+Node-copyfrom-path: b/tags/release-1-0
+
+
+Node-path: trunk
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: trunk/a
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 5
+Node-copyfrom-path: a/trunk
+
+
+Node-path: trunk/b
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 5
+Node-copyfrom-path: b/trunk
+
+
+Revision-number: 7
+Prop-content-length: 105
+Content-length: 105
+
+K 10
+svn:author
+V 3
+srl
+K 8
+svn:date
+V 27
+2018-06-12T20:41:06.535828Z
+K 7
+svn:log
+V 8
+new work
+PROPS-END
+
+Node-path: trunk/a/readme.txt
+Node-kind: file
+Node-action: change
+Text-content-md5: 5fd547aa41f985f860d492ba6daacb55
+Text-content-sha1: a7d3c7ab5f636244946a2a69ea391bcbb9b40922
+Text-content-length: 24
+Content-length: 24
+
+this is a
+something new
+
+
+Node-path: trunk/b/readme.txt
+Node-kind: file
+Node-action: change
+Text-content-md5: e367b2db4238048bb75f39eae475289d
+Text-content-sha1: ce6f50107a468c9235563e2a3bae831e83dd2a46
+Text-content-length: 24
+Content-length: 24
+
+this is b
+something new
+
+
+Revision-number: 8
+Prop-content-length: 101
+Content-length: 101
+
+K 10
+svn:author
+V 3
+srl
+K 8
+svn:date
+V 27
+2018-06-12T20:41:33.997011Z
+K 7
+svn:log
+V 4
+v1.1
+PROPS-END
+
+Node-path: tags/release-1-1
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 7
+Node-copyfrom-path: trunk
+
+
