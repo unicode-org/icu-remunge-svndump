@@ -5,7 +5,8 @@
 
 /* eslint no-console: "off" */
 
-const CLI = require('../cli');
+const irs = require('../index');
+const CLI = irs.CLI;
 
 new CLI(process.argv).run().then(() => {
   process.exitCode = 0;

@@ -2,9 +2,9 @@
   "name": "icu-remunge-svndump",
   "version": "1.0.0",
   "description": "Munger for svn dump files",
-  "main": "cli.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tap test/*.js"
   },
   "bin": "bin/icu-remunge-svndump",
   "keywords": [
@@ -14,5 +14,8 @@
   "license": "Unicode-DFS-2015",
   "dependencies": {
     "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "tap": "^12.0.1"
   }
 }
