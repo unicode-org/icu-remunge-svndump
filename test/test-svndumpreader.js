@@ -14,7 +14,7 @@ const fs = require('fs');
 
 
 t.test('readok', t => {
-    const fin = fs.createReadStream('./test/repos.svndump');
+    const fin = fs.createReadStream('./test/trivial.svndump');
     const f = new SVNDumpReader();
     fin.pipe(f,{});
     t.ok(f);

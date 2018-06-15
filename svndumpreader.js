@@ -10,14 +10,22 @@ class SvnDumpReader extends Duplex {
             readableObjectMode: true,
             writableHighWaterMark: 3
         });
+        this.objbuf = [];
         this.linebuf = '';
         this.rowbuf = [];
         this.headers = null;
+        this.pushok = false;
+        this.closed = false;
 
         this.on('pipe', (fromWhat) => {
             // setTimeout(()=>{}, 3000);
             // console.log('src encoding', fromWhat.encoding);
         });
+
+        // this.on('close', () => {
+        //     this.closed = true;
+        //     // this.readOne(); // try once more?
+        // });
     }
 
     /**
@@ -55,46 +63,75 @@ class SvnDumpReader extends Duplex {
         } while(this.rowbuf[this.rowbuf.length-1] !== '');
     }
 
+    tryPush() {
+        if(this.pushok && this.objbuf.length > 0) {
+            const o = this.objbuf.shift();
+            this.pushok = this.push(o);
+            // console.dir({shift: o});
+            console.log('prepush', this.pushok, 'queue', this.objbuf.length);
+        } else {
+            console.log('nopush', this.pushok, 'queue', this.objbuf.length);
+        }
+    }
+
     /**
      * push one object
      */
     readOne() {
+        // Try once..
+        // try to read another 
         if(!this.headers) {
             this.headers = this.readHeaders();
             if(this.headers) {
                 this.rowbuf = [];
             }
         }
-        if(!this.headers) return; // no headers yet.
-
-        this.push({headers: this.headers});
-        // this.push(r);
+        if(this.headers) {
+            // push onto the object queue
+            const oo = {headers: this.headers};
+            // console.dir({push: oo});
+            this.objbuf.push(oo);
+            this.headers = null; // reset
+            console.log('objbuf++', this.objbuf.length);
+        }
+        this.tryPush();
+        if(!this.objbuf.length === 0 && this.closed) {
+            // this.emit('close');
+            console.log('@@ Time to close');
+        } else {
+            console.log('queue', this.objbuf.length, 'closed', this.closed);
+        }
     }
 
     /**
      * Start fetching from string
      */
     _read() {
+        console.log('_read');
+        // they asked us to read, so
+        this.pushok = true;
         // console.log('read');
         this.readOne();
     }
 
-    _write(chunk, enc) {
+    _write(chunk, enc, cb) {
         if(enc && enc !== 'buffer') {
             chunk = chunk.toString(enc);
         }
         console.log(`_write(${chunk.length})`);
         this.linebuf += chunk; // just keep appending
         this.readOne();
+        cb();
     }
 
     _writev() {
         throw Error('not imp yet: writev');
     }
 
-    _final() {
+    _final(cb) {
         console.log('final');
-
+        this.closed = true;
+        cb();
     }
 }
 
