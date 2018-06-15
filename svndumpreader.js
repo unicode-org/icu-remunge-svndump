@@ -69,6 +69,8 @@ class SvnDumpReader extends Duplex {
             this.pushok = this.push(o);
             // console.dir({shift: o});
             console.log('prepush', this.pushok, 'queue', this.objbuf.length);
+        } else if(this.objbuf.length === 0) {
+            console.log('nodata', this.pushok, 'queue', this.objbuf.length);
         } else {
             console.log('nopush', this.pushok, 'queue', this.objbuf.length);
         }
@@ -95,9 +97,8 @@ class SvnDumpReader extends Duplex {
             console.log('objbuf++', this.objbuf.length);
         }
         this.tryPush();
-        if(!this.objbuf.length === 0 && this.closed) {
-            // this.emit('close');
-            console.log('@@ Time to close');
+        if(this.objbuf.length === 0 && this.closed) {
+            this.push(null);
         } else {
             console.log('queue', this.objbuf.length, 'closed', this.closed);
         }
@@ -131,6 +132,8 @@ class SvnDumpReader extends Duplex {
     _final(cb) {
         console.log('final');
         this.closed = true;
+        // Try to read one more?
+        this.readOne();
         cb();
     }
 }

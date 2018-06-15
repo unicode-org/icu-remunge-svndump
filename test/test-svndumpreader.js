@@ -20,7 +20,7 @@ t.test('readok', t => {
     t.ok(f);
     f.on('readable', () => console.log('readable'));
     f.on('error', (err) => console.error(err));
-    f.on('end', () => console.log('END'));
+    f.on('end', () => t.end());
     f.on('data', (chunk) => console.dir(Object.keys(chunk.headers).length, {depth: Infinity, color: true}));
     // setInterval(() => {}, 3000);
 });
