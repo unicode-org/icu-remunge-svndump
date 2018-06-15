@@ -68,11 +68,11 @@ class SvnDumpReader extends Duplex {
             const o = this.objbuf.shift();
             this.pushok = this.push(o);
             // console.dir({shift: o});
-            console.log('prepush', this.pushok, 'queue', this.objbuf.length);
-        } else if(this.objbuf.length === 0) {
-            console.log('nodata', this.pushok, 'queue', this.objbuf.length);
-        } else {
-            console.log('nopush', this.pushok, 'queue', this.objbuf.length);
+            // console.log('prepush', this.pushok, 'queue', this.objbuf.length);
+        // } else if(this.objbuf.length === 0) {
+        //     console.log('nodata', this.pushok, 'queue', this.objbuf.length);
+        // } else {
+        //     console.log('nopush', this.pushok, 'queue', this.objbuf.length);
         }
     }
 
@@ -94,13 +94,13 @@ class SvnDumpReader extends Duplex {
             // console.dir({push: oo});
             this.objbuf.push(oo);
             this.headers = null; // reset
-            console.log('objbuf++', this.objbuf.length);
+            // console.log('objbuf++', this.objbuf.length);
         }
         this.tryPush();
         if(this.objbuf.length === 0 && this.closed) {
             this.push(null);
-        } else {
-            console.log('queue', this.objbuf.length, 'closed', this.closed);
+        // } else {
+        //     console.log('queue', this.objbuf.length, 'closed', this.closed);
         }
     }
 
@@ -108,7 +108,7 @@ class SvnDumpReader extends Duplex {
      * Start fetching from string
      */
     _read() {
-        console.log('_read');
+        // console.log('_read');
         // they asked us to read, so
         this.pushok = true;
         // console.log('read');
@@ -119,7 +119,7 @@ class SvnDumpReader extends Duplex {
         if(enc && enc !== 'buffer') {
             chunk = chunk.toString(enc);
         }
-        console.log(`_write(${chunk.length})`);
+        // console.log(`_write(${chunk.length})`);
         this.linebuf += chunk; // just keep appending
         this.readOne();
         cb();
@@ -130,7 +130,7 @@ class SvnDumpReader extends Duplex {
     }
 
     _final(cb) {
-        console.log('final');
+        // console.log('final');
         this.closed = true;
         // Try to read one more?
         this.readOne();

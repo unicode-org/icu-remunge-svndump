@@ -13,14 +13,15 @@ const fs = require('fs');
 // });
 
 
-t.test('readok', t => {
+t.test('readall', t => {
     const fin = fs.createReadStream('./test/trivial.svndump');
     const f = new SVNDumpReader();
     fin.pipe(f,{});
     t.ok(f);
-    f.on('readable', () => console.log('readable'));
-    f.on('error', (err) => console.error(err));
+    // f.on('readable', () => console.log('readable'));
+    f.on('error', (err) => conole.error(err));
     f.on('end', () => t.end());
-    f.on('data', (chunk) => console.dir(Object.keys(chunk.headers).length, {depth: Infinity, color: true}));
+    // f.on('data', (chunk) => console.dir(Object.keys(chunk.headers).length, {depth: Infinity, color: true}));
+    f.on('data', () => {});
     // setInterval(() => {}, 3000);
 });
