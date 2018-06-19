@@ -1,0 +1,6 @@
+{
+    "map": [
+        [ "/a/trunk", "trunk/a" ],
+        [ "b/trunk", "trunk/b" ]
+    ]
+}
