@@ -1,6 +1,12 @@
 {
     "map": [
-        [ "/a/trunk", "trunk/a" ],
-        [ "b/trunk", "trunk/b" ]
-    ]
+        [ "^(a|b)\\/(trunk)\\/(.+)$", "$2\\/$1$3"]
+    ],
+    "r1": {
+        "mkdir": [
+            "/trunk",
+            "/branches",
+            "/tags"
+        ]
+    }
 }

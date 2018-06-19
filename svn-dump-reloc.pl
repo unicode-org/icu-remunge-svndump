@@ -27,7 +27,8 @@
 use strict;
 use warnings;
 use JSON qw( decode_json ); # cpan install json
-use JSON qw( encode_json ); # cpan install json
+# use JSON qw( encode_json ); # cpan install json
+use Data::Dumper;
 
 my $usage = <<EOU;
 Usage:
@@ -59,22 +60,32 @@ die("could not read config file $configpath") unless $config;
 
 # print STDERR $config->{'map'};
 
-my %f2t;
+# my @f2t;
 
+# anything in map: will be the map (formerly args)
 my $map = $config->{'map'};
+my @f2re;
 
 foreach my $pair(@$map) {
     # trim leading and trailing slashes
-    s|^/*|| for @$pair;
-    s|/*$|| for @$pair;
+    # s|^/*|| for @$pair;
+    # s|/*$|| for @$pair;
     my ($src, $targ) = @$pair;
-    # print STDERR "Map: $src — $targ\n";
-    $f2t{$src} = $targ;
+    print STDERR "Map: $src — $targ\n";
+    # $f2t{$src} = $targ;
+    my @topush = ($src, $targ);
+    push @f2re, \@topush;
 }
 
-my @f = reverse sort keys %f2t;
-my %f2re = map { $_, path2re($_) } @f;
+# my @f = reverse sort keys %f2t;
+# my @f2re = map { $_, qr|$_| } @f;
 
+# anything in r0.mkdir will be created in the first revision
+
+my $r1mkdir = $config->{'r1'}->{'mkdir'};
+
+s|^/*|| for @$r1mkdir;
+s|/*$|| for @$r1mkdir;
 
 
 binmode STDIN;
@@ -88,21 +99,32 @@ $head =~ /^SVN-fs-dump-format-version:\s*2\s*$/
 
 print $head;
 
+my $doInsertr1 = 0; # if 1: it means, we are at the end of r1's props.
+
+# print STDERR Dumper(@f2re);
+
 while (!eof STDIN) {
     my $line = <STDIN>;
     my $cl = 0;
     if (my ($k, $v) = $line =~ /^(.*?)\s*:\s*(.*)$/) {
         if ($k eq 'Node-path' or $k eq 'Node-copyfrom-path') {
-            for my $from (@f) {
-                my $re = $f2re{$from};
-                if ($v =~ $re) {
-                    if ($from eq '') {
-                        $line = "$k: $f2t{$from}/$1$/";
-                    }
-                    else {
-                        $line = "$k: $f2t{$from}$1$/";
-                    }
-                    # print STDERR "from: $from, re: $re, to: $line";
+            foreach my $pair (@f2re) {
+                # print STDERR Dumper($pair);
+                my $re = $pair->[0];
+                my $targ = $pair->[1];
+                # my ($re, $targ) = $pair;
+                # my $re = $f2re{$from};
+                my $oldv = $v;
+                if ($v =~ s/$re/$targ/ee) {
+                    # if (not $targ) {
+                    # }
+                    # if ($from eq '') {
+                    #     $line = "$k: $f2t{$from}/$1$/";
+                    # }
+                    # else {
+                        $line = "$k: $v\n";
+                    # }
+                    print STDERR "from: $oldv, re: $re, to: $line\n";
                     last;
                 }
             }
@@ -110,6 +132,32 @@ while (!eof STDIN) {
 
         elsif ($k eq 'Content-length') {
             $cl = $v;
+        }
+
+        elsif ($k eq 'Revision-number' and $v eq '1') {
+            $doInsertr1 = 1;
+        }
+    } else {
+        if ($doInsertr1) {
+            # print STDOUT "-0\n\n\n";
+            # additions
+            foreach my $dir(@$r1mkdir) {
+                print STDERR "# mkdir $dir\n";
+                print STDOUT <<EOU
+
+
+
+Node-path: $dir
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+EOU
+            }
+            # print STDOUT "--1\n";
+            $doInsertr1 = 0;
         }
     }
     print $line;
