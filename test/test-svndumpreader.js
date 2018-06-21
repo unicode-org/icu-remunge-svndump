@@ -22,6 +22,7 @@ t.test('readall', t => {
     f.on('error', (err) => conole.error(err));
     f.on('end', () => t.end());
     // f.on('data', (chunk) => console.dir(Object.keys(chunk.headers).length, {depth: Infinity, color: true}));
-    f.on('data', () => {});
+    // f.on('data', () => {});
+    f.on('data', (chunk) => console.log(JSON.stringify(chunk)));
     // setInterval(() => {}, 3000);
 });

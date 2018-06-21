@@ -7,6 +7,7 @@ const fs = require('fs');
 class SvnDumpReader extends Duplex {
     constructor() {
         super({
+            writeableEncoding: 'binary',
             readableObjectMode: true,
             writableHighWaterMark: 3
         });
@@ -37,8 +38,13 @@ class SvnDumpReader extends Duplex {
 
         const endLine = this.linebuf.indexOf('\n');
         if(endLine<0) return;
+        return this.readOneChunk(endLine+1).trim();
+    }
+
+    readOneChunk(endLine) {
         const r = this.linebuf.substring(0, endLine);
-        this.linebuf = this.linebuf.substring(endLine+1);
+        this.linebuf = this.linebuf.substring(endLine);
+        // console.log('ROC',endLine,' remaining', this.linebuf.length, 'start', this.linebuf.substring(0, 20));
         return r;
     }
 
@@ -84,14 +90,52 @@ class SvnDumpReader extends Duplex {
         // try to read another 
         if(!this.headers) {
             this.headers = this.readHeaders();
+            // console.log('RH remaining', this.linebuf.length, 'start', this.linebuf.substring(0, 20));
             if(this.headers) {
                 this.rowbuf = [];
             }
         }
         if(this.headers) {
+            const headers = this.headers;
+            const headerMap = headers.reduce((p,v) => {
+                const matchit = /^([A-Za-z0-9-]+):[ ]*(.*)$/.exec(v);
+                if(matchit) {
+                    const [, header, val] = matchit;
+                    p[header] = val;
+                } else if(v !== '') {
+                    console.log('failmatch', v);
+                }
+                return p;
+            }, {});
+
+            const oo = {headers, headerMap};
+
+            const contentLength = headerMap['Content-length'];
+            if(contentLength !== undefined) {
+                if(this.linebuf.length < contentLength) {
+                    throw Error(`Aaa i need to read ${contentLength} but I only have ${this.linebuf.length} FIXME`);
+                }
+                oo.body = this.readOneChunk(contentLength);
+                // console.dir(JSON.stringify({interim: oo}));
+                // console.log('remaining', this.linebuf.length, 'start', this.linebuf.substring(0, 20));
+                if(headerMap['Prop-content-length']) {
+                    let propData = oo.body.substring(0, headerMap['Prop-content-length']);
+                    console.log('PROPDATA', propData);
+                    do {
+                        const e = propData.indexOf('\n');
+                        const propRes = /^[KV] ([0-9])+.*/.exec(propData);
+                        if(!propRes) throw Error(`Could not extract propdata from ${propData.substring(0,20)}…`);
+                        const [, kn] = propRes;
+                        const k = propData.substring(e,kn);
+                        console.log('k', k);
+
+                        propData = propData.substring(e+kn);
+                    } while (propData.length > 0);
+                }
+            }
+
             // push onto the object queue
-            const oo = {headers: this.headers};
-            // console.dir({push: oo});
+            console.dir(JSON.stringify({push: oo}));
             this.objbuf.push(oo);
             this.headers = null; // reset
             // console.log('objbuf++', this.objbuf.length);
@@ -117,10 +161,11 @@ class SvnDumpReader extends Duplex {
 
     _write(chunk, enc, cb) {
         if(enc && enc !== 'buffer') {
+            console.log('ENCODING', enc);
             chunk = chunk.toString(enc);
         }
         // console.log(`_write(${chunk.length})`);
-        this.linebuf += chunk; // just keep appending
+        this.linebuf += chunk.toString('latin1'); // just keep appending
         this.readOne();
         cb();
     }
