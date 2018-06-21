@@ -31,6 +31,11 @@ Pipeline:
 - `fs.writableStream('icu-mod.svndump')` ( and then on to svn2git etc. )
 
 
+- tags generated with:
+
+    $ svn list ^/icu/tags ^/icu4j/tags | sort | uniq | sed -e 's%.*%  "/tags/&",%' 
+
+
 ### LICENSE
 
 part of ICU tools, see [LICENSE](./LICENSE)

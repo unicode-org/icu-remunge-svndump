@@ -115,7 +115,7 @@ while (!eof STDIN) {
             if ($k eq 'Node-path') {
                 foreach my $dir(@$r1mkdir) {
                     if ($v eq $dir) {
-                        print STDERR "$k !!! $v\n";
+                        # print STDERR "$k !!! $v\n";
                         $nodePathIgnore = 1; # ignore this
                     }
                 }
@@ -136,7 +136,7 @@ while (!eof STDIN) {
                     # else {
                         $line = "$k: $v\n";
                     # }
-                    print STDERR "from: $oldv, re: $re, to: $line\n";
+                    # print STDERR "from: $oldv, re: $re, to: $line\n";
                     last;
                 }
             }
