@@ -1,10 +1,15 @@
 {
     "map": [
-        [ "^(a|b)\\/(trunk)\\/(.+)$", "$2\\/$1$3"]
+        [ "^(a|b)\\/(trunk)\\/(.+)$", "\"$2\\/$1\\/$3\""]
+    ],
+    ".disable_map": [
+        [ "^(tags|trunk|branches)$", "\"delete_$1\"" ]
     ],
     "r1": {
         "mkdir": [
             "/trunk",
+            "/trunk/a",
+            "/trunk/b",
             "/branches",
             "/tags"
         ]
