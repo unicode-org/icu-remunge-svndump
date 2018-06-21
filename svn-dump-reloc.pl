@@ -100,14 +100,26 @@ $head =~ /^SVN-fs-dump-format-version:\s*2\s*$/
 print $head;
 
 my $doInsertr1 = 0; # if 1: it means, we are at the end of r1's props.
+my $nodeKind = 0;
+my $nodeAction = 0;
+my $nodePath = 0;
 
 # print STDERR Dumper(@f2re);
-
+my $nodePathIgnore = 0;
 while (!eof STDIN) {
     my $line = <STDIN>;
     my $cl = 0;
     if (my ($k, $v) = $line =~ /^(.*?)\s*:\s*(.*)$/) {
         if ($k eq 'Node-path' or $k eq 'Node-copyfrom-path') {
+            $nodePath = $v;
+            if ($k eq 'Node-path') {
+                foreach my $dir(@$r1mkdir) {
+                    if ($v eq $dir) {
+                        print STDERR "$k !!! $v\n";
+                        $nodePathIgnore = 1; # ignore this
+                    }
+                }
+            }
             foreach my $pair (@f2re) {
                 # print STDERR Dumper($pair);
                 my $re = $pair->[0];
@@ -137,6 +149,21 @@ while (!eof STDIN) {
         elsif ($k eq 'Revision-number' and $v eq '1') {
             $doInsertr1 = 1;
         }
+
+        elsif ($k eq 'Node-kind') {
+            $nodeKind = $v;
+        }
+
+        elsif ($k eq 'Node-action') {
+            $nodeAction = $v;
+            # if ($nodePathIgnore) {
+            #     print STDERR "$nodeAction / $nodeKind / $line";
+            # }
+            if ($nodePathIgnore and $nodeAction eq 'add' and $nodeKind eq 'dir') {
+                print STDERR "replacing $nodePath / $nodeAction / $nodeKind / $line";
+                $line = "Node-action: change\n";
+            }
+        }
     } else {
         if ($doInsertr1) {
             # print STDOUT "-0\n\n\n";
@@ -158,12 +185,21 @@ EOU
             }
             # print STDOUT "--1\n";
             $doInsertr1 = 0;
+            $nodeKind = 0;
+            $nodeAction = 0;
+            $nodePath = '';
+            $nodePathIgnore = 0;
         }
     }
     print $line;
 
     if ($cl) {
         dump_binary($cl);
+        # reset stuff
+        $nodeKind = 0;
+        $nodeAction = 0;
+        $nodePath = '';
+        $nodePathIgnore = 0;
     }
 }
 
