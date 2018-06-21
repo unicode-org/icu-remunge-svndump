@@ -2,33 +2,13 @@
 
 for munging ICU's [svndump](http://svn.apache.org/repos/asf/subversion/trunk/notes/dump-load-format.txt)
 
-## Theory
+- usage:
 
-Pipeline:
-
-- `fs.readableStream('icu.svndump')`
-- `SvnDumpReader` - convert raw to structure (object stream):
-
-```json
-{
-    "headers": {
-        "Node-path": "a/tags",
-        "Node-kind": "dir",
-        "Node-action": "add",
-        "Prop-content-length": "10",
-        "Text-content-length": "10",
-        "Content-length": "20"
-    },
-    "props": {
-        "svn:author": "srl",
-        "svn:date": "2018-06-12T20:32:41.873637Z"
-    },
-    "data": "this is b\n"
-}
-```
-- `SvnPathFilter` - take in structured stream, fix paths, add/omit entries per config
-- `SvnDumpWriter` - convert structured stream back to svn text dump 
-- `fs.writableStream('icu-mod.svndump')` ( and then on to svn2git etc. )
+        svnadmin create /repos/icu2
+        
+        svnadmin dump /repos/icu  | perl svn-dump-reloc.pl icureloc.json | svnadmin load /repos/icu2
+        
+        # now convert to git, etc
 
 
 - tags generated with:
@@ -37,5 +17,34 @@ Pipeline:
 
 
 ### LICENSE
+
+Major portions from Salvador Fandiño García http://search.cpan.org/~salva/SVN-DumpReloc-0.02/
+
+    COPYRIGHT AND LICENCE
+
+    Copyright (C) 2007-2008 by Qindel Formacion y Servicios S.L.
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation files
+    (the "Software"), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software,
+    and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+    BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+
+
 
 part of ICU tools, see [LICENSE](./LICENSE)
