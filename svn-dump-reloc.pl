@@ -168,8 +168,8 @@ while (!eof STDIN) {
         if ($doInsertr1) {
             # print STDOUT "-0\n\n\n";
             # additions
+            print STDERR "# r1: mkdir...\n";
             foreach my $dir(@$r1mkdir) {
-                print STDERR "# mkdir $dir\n";
                 print STDOUT <<EOU
 
 

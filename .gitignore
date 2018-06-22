@@ -1,3 +1,7 @@
 /node_modules
 /.nyc_output
 local-*
+/reposbis
+/workbis
+/*.svndump
+/test/*2.svndump
