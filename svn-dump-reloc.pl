@@ -99,6 +99,8 @@ $head =~ /^SVN-fs-dump-format-version:\s*2\s*$/
 
 print $head;
 
+my %mkdirhash;
+
 my $doInsertr1 = 0; # if 1: it means, we are at the end of r1's props.
 my $nodeKind = 0;
 my $nodeAction = 0;
@@ -113,11 +115,9 @@ while (!eof STDIN) {
         if ($k eq 'Node-path' or $k eq 'Node-copyfrom-path') {
             $nodePath = $v;
             if ($k eq 'Node-path') {
-                foreach my $dir(@$r1mkdir) {
-                    if ($v eq $dir) {
-                        # print STDERR "$k !!! $v\n";
-                        $nodePathIgnore = 1; # ignore this
-                    }
+                if (exists $mkdirhash{$v}) {
+                    # print STDERR "$k !!! $v\n";
+                    $nodePathIgnore = 1; # ignore this
                 }
             }
             foreach my $pair (@f2re) {
@@ -170,6 +170,7 @@ while (!eof STDIN) {
             # additions
             print STDERR "# r1: mkdir...\n";
             foreach my $dir(@$r1mkdir) {
+                $mkdirhash{$dir} = '1';
                 print STDOUT <<EOU
 
 
