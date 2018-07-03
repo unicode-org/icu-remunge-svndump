@@ -18,6 +18,9 @@ svn cp    -m 'branch' ${REPURL}/icu/trunk ${REPURL}/icu/branches/tkeep/10804
 svn del   -m 'oops r35592' ${REPURL}/icu/trunk ${REPURL}/icu/branches/tkeep/10804
 svn cp    -m 'fix r35593' ${REPURL}/icu/trunk@3 ${REPURL}/icu/trunk
 ## TODO: reorg?
+svn mkdir -m 'reorg' --parents ${REPURL}/trunk ${REPURL}/branches
+svn cp -m 'reorg2' ${REPURL}/icu/trunk ${REPURL}/trunk/icu
+
 
 svnadmin dump ${REPO} > ${DUMP} && wc -l ${DUMP}
 

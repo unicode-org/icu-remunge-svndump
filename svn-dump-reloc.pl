@@ -102,6 +102,7 @@ print $head;
 my %mkdirhash;
 
 my $doInsertr1 = 0; # if 1: it means, we are at the end of r1's props.
+my $revision = 0;
 my $nodeKind = 0;
 my $nodeAction = 0;
 my $nodePath = 0;
@@ -146,8 +147,15 @@ while (!eof STDIN) {
             $cl = $v;
         }
 
-        elsif ($k eq 'Revision-number' and $v eq '1') {
-            $doInsertr1 = 1;
+        elsif ($k eq 'Revision-number') {
+            $revision = $v;
+            my $configSpecial = $config->{"r$v"};
+            if($configSpecial) {
+                if($configSpecial->{'mkdir'} and $v eq '1') {
+                    # r1 is special
+                    $doInsertr1 = 1;
+                }
+            }
         }
 
         elsif ($k eq 'Node-kind') {

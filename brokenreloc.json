@@ -1,0 +1,28 @@
+{
+    "map": [
+        [ "^(icu4j|tools)\\/(trunk)\\/(.+)$", "\"$2\\/$1\\/$3\""],
+        [ "^(icu4j|tools)\\/(trunk)$", "\"$2\\/$1\""],
+        [ "^(icu)\\/(trunk)\\/(.+)$", "\"$2\\/icu4c\\/$3\""],
+        [ "^(icu)\\/(trunk)$", "\"$2\\/icu4c\""],
+        [ "^(icu|icu4j|tools)\\/(tags|branches)\\/(.*)$", "\"$2\\/$1-$3\""]
+    ],
+    "r1": {
+        "mkdir": [
+            "/trunk",
+            "/branches",
+            "/tags"
+        ]
+    },
+    "r4": {
+        "map-action": {
+            "delete": {
+                "icu/trunk": "change"
+            }
+        }
+    },
+    "r5": {
+        "map-path": {
+            "icu/trunk": "ignore-me"
+        }
+    }
+}
