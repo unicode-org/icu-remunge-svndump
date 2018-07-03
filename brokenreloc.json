@@ -21,7 +21,7 @@
         }
     },
     "r5": {
-        "map-path": {
+        "map-Node-path": {
             "icu/trunk": "ignore-me"
         }
     }
