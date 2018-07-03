@@ -102,6 +102,8 @@ print $head;
 my %mkdirhash;
 
 my $doInsertr1 = 0; # if 1: it means, we are at the end of r1's props.
+my $configSpecial;
+my $revision = 0;
 my $nodeKind = 0;
 my $nodeAction = 0;
 my $nodePath = 0;
@@ -118,6 +120,15 @@ while (!eof STDIN) {
                 if (exists $mkdirhash{$v}) {
                     # print STDERR "$k !!! $v\n";
                     $nodePathIgnore = 1; # ignore this
+                }
+                if($configSpecial) {
+                    my $pathmap = $configSpecial->{'map-Node-path'};
+                    if($pathmap && $pathmap->{$nodePath}) {
+                        $nodePath = $pathmap->{$nodePath};
+                        print STDERR "$revision: map-Node-path $v -> $nodePath\n";
+                        $v = $nodePath;
+                        $line = "$k: $nodePath\n";
+                    }
                 }
             }
             foreach my $pair (@f2re) {
@@ -146,8 +157,16 @@ while (!eof STDIN) {
             $cl = $v;
         }
 
-        elsif ($k eq 'Revision-number' and $v eq '1') {
-            $doInsertr1 = 1;
+        elsif ($k eq 'Revision-number') {
+            $revision = $v;
+            $configSpecial = $config->{"r$v"};
+            if($configSpecial) {
+                # print STDERR Dumper($configSpecial);
+                if($configSpecial->{'mkdir'} and $v eq '1') {
+                    # r1 is special
+                    $doInsertr1 = 1;
+                }
+            }
         }
 
         elsif ($k eq 'Node-kind') {
@@ -159,9 +178,24 @@ while (!eof STDIN) {
             # if ($nodePathIgnore) {
             #     print STDERR "$nodeAction / $nodeKind / $line";
             # }
+            # print STDERR "$revision" . Dumper($configSpecial);
             if ($nodePathIgnore and $nodeAction eq 'add' and $nodeKind eq 'dir') {
                 print STDERR "replacing $nodePath / $nodeAction / $nodeKind / $line";
                 $line = "Node-action: change\n";
+            } elsif ($configSpecial && $configSpecial->{'map-action'}) {
+                if ($configSpecial->{'map-action'}->{$nodeAction}) {
+                    my $newAction = $configSpecial->{'map-action'}->{$nodeAction}->{$nodePath};
+                    if ($newAction) {
+                        print STDERR "replacing $nodePath / $nodeAction -> $newAction / $nodeKind / $line";
+                        $line = "Node-action: ${newAction}\n";
+                    } else {
+                        print STDERR "special did not apply to $nodePath\n";
+                    }
+                } else {
+                    print STDERR "special did not apply to $nodeAction\n";
+                }
+            # } elsif($configSpecial) {
+            #     print STDERR "$revision: some other special..\n";
             }
         }
     } else {
@@ -201,6 +235,7 @@ EOU
         $nodeAction = 0;
         $nodePath = '';
         $nodePathIgnore = 0;
+        # $configSpecial = 0;
     }
 }
 

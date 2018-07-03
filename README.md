@@ -15,6 +15,58 @@ for munging ICU's [svndump](http://svn.apache.org/repos/asf/subversion/trunk/not
 
     $ svn list ^/icu/tags ^/icu4j/tags | sort | uniq | sed -e 's%.*%  "/tags/&",%' 
 
+- config file format
+
+    - `map:`
+
+        this is a series of regexes from old to new. they will be applied to all paths.
+
+        ```json
+        {
+            "map": [
+                [ "^(icu4j|tools)\\/(trunk)$", "\"$2\\/$1\""],
+                [ "^(icu)\\/(trunk)\\/(.+)$", "\"$2\\/icu4c\\/$3\""]
+            ]
+        }
+        ```
+    - `r1:`
+
+        r1 is special and can have some `mkdir` lines that will be created at r1 and will be protected against re-creation.
+
+        ```json
+        {
+            "r1": {
+                "mkdir": [
+                    "/trunk",
+                    "/branches",
+                    "/tags"
+                ]
+            }
+        }
+        ```
+
+        In theory the following rules could also be a part of r1, but thi has not been teted.
+
+    - `r*:` there can be rules for each revision. The two supported rules are:
+        - `map-action` - map one action to another. The following example maps `delete` to `change` for two specified paths. (I have only tested with one path, but it should work™).
+
+        ```json
+        "map-action": {
+            "delete": {
+                "icu/trunk": "change",
+                "icu/tags": "change"
+            }
+        }
+        ```
+
+        - `map-Node-path` - map one Node-path to another. This maps `/icu/trunk` to `/ignore-me`.
+
+        ```json
+        "map-Node-path": {
+            "icu/trunk": "ignore-me"
+        }
+        ```
+
 
 ### LICENSE
 

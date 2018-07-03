@@ -5,3 +5,8 @@ local-*
 /workbis
 /*.svndump
 /test/*2.svndump
+/test/broken
+/test/fixed
+/test/broken.d
+/test/fixed.d
+/test/fixed.svndump
