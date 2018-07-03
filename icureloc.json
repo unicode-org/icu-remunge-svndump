@@ -12,5 +12,18 @@
             "/branches",
             "/tags"
         ]
+    },
+    "r35592": {
+        "map-action": {
+            "delete": {
+                "icu/trunk": "change"
+            }
+        }
+    },
+    "r35593": {
+        "map-Node-path": {
+            "icu/trunk": "ignore-me"
+        }
     }
+
 }
