@@ -1,5 +1,7 @@
 # icu-remunge-svndump
 
+## Note: Unsupported, archived, internal tool.
+
 for munging ICU's [svndump](http://svn.apache.org/repos/asf/subversion/trunk/notes/dump-load-format.txt)
 
 - usage:
@@ -69,7 +71,7 @@ for munging ICU's [svndump](http://svn.apache.org/repos/asf/subversion/trunk/not
 
 ### License
 
-Copyright © 2016-2023 Unicode, Inc. Unicode and the Unicode Logo are registered trademarks of Unicode, Inc. in the United States and other countries.
+Copyright © 2016-2024 Unicode, Inc. Unicode and the Unicode Logo are registered trademarks of Unicode, Inc. in the United States and other countries.
 
 The project is released under [LICENSE](./LICENSE).
 
